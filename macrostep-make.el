@@ -32,7 +32,9 @@
 ;;
 ;; - creates an association list of macro -> value
 ;; - currently is able to parse included makefiles and add their macro
-;;   definitions so long as there aren't any make functions involved, like 'shell'
+;;   definitions. If `macrostep-make-use-shell' is non-nil, then included
+;;   makefiles that require the $(shell) command can be found by calling
+;;   `shell-file-name'.
 ;;
 ;; - macrostep interface:
 ;; 	+ macrostep-sexp-bounds-function
@@ -60,6 +62,10 @@
 
 (require 'macrostep)
 (require 'make-mode)
+
+;;; Variables
+(defvar macrostep-make-use-shell t
+  "If non-nil, call `shell-file-name' to evaluate makefile 'shell' variables.")
 
 ;; -------------------------------------------------------------------
 ;;; Utils
@@ -228,19 +234,30 @@
     ;; this regex should find start of unescaped variables
     (while (re-search-forward "\\(?:\\|[^\\]\\)\\(\$[\(\{]\\)"
                               (or end (line-end-position)) 'move)
-      (push (cons (match-beginning 1) ;start
-                  (progn (goto-char (1- (match-end 0)))
-                         (forward-list)
-                         (point)))    ;end
-            pos))
+      (push (match-beginning 1) pos)    ;push starting location
+      (goto-char (match-end 0)))        ;onto the next one
     pos))
+
+;; find variable name from starting position BEG if non-nil, or point.
+;; this involves skipping the preceding $[\(\{]
+;; and skipping forward to matching closing bracket
+;; returns variable name and leaves point at end of variable
+(defun macrostep-make--variable-bounds (&optional beg)
+  (and beg (goto-char beg))
+  (forward-char)                        ;skip '$'
+  (let ((start (1+ (point)))            ;start after opening brace
+        (end (progn                     ;point at matching brace - 1
+               (forward-list)
+               (1- (point)))))
+    (buffer-substring-no-properties start end)))
 
 ;; substitute macros with their values from MACRO-TABLE in string STR
 ;; if MACRO-TABLE is nil, use macrostep-make--table by default
 ;; Note: substituting is done from rightmost to leftmost variable.
 ;; also, after a variable is substituted, the string from the beginning
 ;; of the substitution is again checked for new variables that may have
-;; been added, and their positions prepened to the variable position stack
+;; been added, and their positions prepened to the variable position stack,
+;; so nested variables are expanded if they are known
 (defun macrostep-make--substitute-variables (str &optional macro-table)
   (unless macro-table
     (setq macro-table (buffer-local-value 'macrostep-make--table
@@ -249,22 +266,31 @@
     (insert str)
     (goto-char (point-min))
     (let ((pos (macrostep-make--variable-positions)) ;positions of variables
-          bnds)
+          beg)                                       ;next variable beginning
       (while (and pos
-                  (setq bnds (pop pos))) ;replace each from back to front
-        (let ((macro-value               ;replace if value is known
-               (macrostep-make--get-value
-                (buffer-substring-no-properties (+ 2 (car bnds))
-                                                (1- (cdr bnds)))
-                macro-table)))
+                  (setq beg (pop pos))) ;replace each from back to front
+        (let* ((var-name (macrostep-make--variable-name beg))
+               (macro-value              ;replace if value is known
+                (or (and macrostep-make-use-shell ;shell command, or lookup
+                         (macrostep-make--do-shell var-name))
+                    (macrostep-make--get-value var-name macro-table))))
           (when macro-value
-            (delete-region (car bnds) (cdr bnds)) ;delete variable
-            (goto-char (car bnds))
-            (insert macro-value)      ;insert value
+            (delete-region beg (point)) ;delete variable
+            (goto-char beg)             ;goto beginning of insertion
+            (insert macro-value)        ;insert value
             ;; there may be new variables in inserted text, so
             ;; update new positions at the front of the list
+            ;; NOTE: todo successive expansions, don't expand them all here
+            (goto-char beg)             ;back to beginning of insertion
             (setq pos (append (macrostep-make--variable-positions) pos))))))
     (buffer-string)))
+
+;; do a shell command
+(defun macrostep-make--do-shell (cmd)
+  (when (string-prefix-p "shell" cmd)
+    (let ((res (shell-command-to-string
+                (concat shell-file-name " -c " (substring cmd 5)))))
+      (string-trim res))))
 
 ;; -------------------------------------------------------------------
 ;;; Macrostep interface
