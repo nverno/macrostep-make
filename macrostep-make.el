@@ -242,7 +242,7 @@
 ;; this involves skipping the preceding $[\(\{]
 ;; and skipping forward to matching closing bracket
 ;; returns variable name and leaves point at end of variable
-(defun macrostep-make--variable-bounds (&optional beg)
+(defun macrostep-make--variable-name (&optional beg)
   (and beg (goto-char beg))
   (forward-char)                        ;skip '$'
   (let ((start (1+ (point)))            ;start after opening brace
