@@ -165,6 +165,7 @@
     (while (not (eobp))                   ;go through each line
       (forward-comment (point-max))       ;skip over comments
       (or (macrostep-make--grab-macro)    ;if macro, get that
+          (beginning-of-line)             ;try again
           (macrostep-make--grab-include)) ;if include, merge its table
       (forward-line))))
 
