@@ -7,7 +7,9 @@ Expands make variables using macrostep-expand interface.
 
 - creates an association list of macro -> value
 - currently is able to parse included makefiles and add their macro
-  definitions so long as there aren't any make functions involved, like 'shell'
+  definitions. If `macrostep-make-use-shell` is non-nil, then included
+  makefiles that require the $(shell) command can be found by calling
+  `shell-file-name`.
 - macrostep interface:
 	+ macrostep-sexp-bounds-function
 	+ macrostep-sexp-at-point-function
