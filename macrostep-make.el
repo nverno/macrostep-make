@@ -46,6 +46,7 @@
 ;; TODO:
 ;; - Deal with '+=', also possibly '?=' by adding new cell to table
 ;;   to determine what to do when mergin tables
+;; - support 'ifeq', 'ifneq'
 ;; - Either do variable substitution when storing values or do multi-level
 ;;   macroexpansion, like elisp.
 
@@ -335,8 +336,6 @@
         " "                             ;so original variable is replaced
       macro-value)))
 
-(defmacro poop ())
-(poop)
 ;; simple insertion of value
 (defun macrostep-make-print (expansion &rest _ignore)
   (insert expansion))
