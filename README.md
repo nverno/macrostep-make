@@ -17,12 +17,9 @@ Expands make variables using macrostep-expand interface.
 	+ macrostep-expand-1-function
 	+ macrostep-print-function
 
-PROBLEMS:
-- when expanding variable with blank definition, it isn't replaced
-  with original variable
-
 TODO:
-- Deal with '+='
+- Deal with '+=', also possibly '?=' by adding new cell to table
+  to determine what to do when mergin tables
 - Either do variable substitution when storing values or do multi-level
   macroexpansion, like elisp.
 

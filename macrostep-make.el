@@ -43,12 +43,9 @@
 ;;	+ macrostep-expand-1-function
 ;;	+ macrostep-print-function
 ;;
-;; PROBLEMS:
-;; - when expanding variable with blank definition, it isn't replaced
-;;   with original variable
-;;
 ;; TODO:
-;; - Deal with '+='
+;; - Deal with '+=', also possibly '?=' by adding new cell to table
+;;   to determine what to do when mergin tables
 ;; - Either do variable substitution when storing values or do multi-level
 ;;   macroexpansion, like elisp.
 
@@ -328,12 +325,18 @@
 
 ;; expand macro
 (defun macrostep-make-expand-1 (region _ignore)
-  (let ((macro-name (buffer-substring-no-properties
+  (let* ((macro-name (buffer-substring-no-properties
                      (+ 2 (car region))   ;skip $( or ${
-                     (1- (cdr region))))) ;skip ) or }
-    (or (macrostep-make--get-value macro-name)
-        (signal 'macrostep-make-not-found `(,macro-name)))))
+                     (1- (cdr region))))  ;skip ) or }
+         (macro-value (macrostep-make--get-value macro-name)))
+    (unless macro-value
+      (signal 'macrostep-make-not-found `(,macro-name)))
+    (if (string= "" macro-value)
+        " "                             ;so original variable is replaced
+      macro-value)))
 
+(defmacro poop ())
+(poop)
 ;; simple insertion of value
 (defun macrostep-make-print (expansion &rest _ignore)
   (insert expansion))
