@@ -3,7 +3,7 @@
 ;; This is free and unencumbered software released into the public domain.
 
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
-;; URL: https://github.com/nverno/make-tools
+;; URL: https://github.com/nverno/macrostep-make
 ;; Package-Requires: 
 ;; Created:  6 May 2017
 
@@ -200,7 +200,7 @@
       (unless (or (nth 3 syntax)    ;not in string or comment
                   (nth 4 syntax))
         ;; substitute variables from macro table into file name
-        ;; TODO: could run shell commands as option
+        ;; runs shell commands if `macrostep-make-use-shell' is non-nil
         (let ((file (macrostep-make--substitute-variables
                      (match-string-no-properties 1))))
           (when (file-exists-p file)     ;do it all over again in new file

@@ -1,5 +1,5 @@
 *Author:* Noah Peart <noah.v.peart@gmail.com><br>
-*URL:* [https://github.com/nverno/make-tools](https://github.com/nverno/make-tools)<br>
+*URL:* [https://github.com/nverno/macrostep-make](https://github.com/nverno/macrostep-make)<br>
 
 Description:
 
@@ -20,6 +20,7 @@ Expands make variables using macrostep-expand interface.
 TODO:
 - Deal with '+=', also possibly '?=' by adding new cell to table
   to determine what to do when mergin tables
+- support 'ifeq', 'ifneq'
 - Either do variable substitution when storing values or do multi-level
   macroexpansion, like elisp.
 
