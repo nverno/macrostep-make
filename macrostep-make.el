@@ -43,6 +43,14 @@
 ;;	+ macrostep-expand-1-function
 ;;	+ macrostep-print-function
 ;;
+;; Hacks:
+;; - variables are updated when ':' and '=' pressed, actions that are defined
+;;   in `make-mode'. Therefore, it is quite possible that variables and their
+;;   definitions will not always stay in sync. In order to sync them, call
+;;   `makefile-pickup-everthing' from `make-mode' to update all targets and
+;;   macros defined in the file. This won't update variables from included
+;;   files however.
+;;
 ;; TODO:
 ;; - Deal with '+=', also possibly '?=' by adding new cell to table
 ;;   to determine what to do when mergin tables
@@ -131,6 +139,10 @@
 ;; The macro table is a simple association list of form
 ;; ((macro-name . macro-value) ...)
 
+;; so we can update possibly missed variables when called from
+;; `makefile-pickup-everything'
+(advice-add 'makefile-pickup-everything :after 'macrostep-make--update-macro-table)
+
 ;; table of macros and their values
 (defvar-local macrostep-make--table nil)
 
@@ -163,7 +175,7 @@
     (and val (cdr val))))
 
 ;; Create/update association table for macros and values
-(defun macrostep-make--update-macro-table ()
+(defun macrostep-make--update-macro-table (&rest _ignored)
   (save-excursion
     (goto-char (point-min))
     (while (not (eobp))                   ;go through each line
