@@ -18,11 +18,13 @@ Expands make variables using macrostep-expand interface.
 	+ macrostep-print-function
 
 Hacks:
-- variables are updated when ':' and '=' pressed, actions that are defined
-  in `make-mode`. Therefore, it is quite possible that variables and their
-  definitions will not always stay in sync. In order to sync them, call
-  `makefile-pickup-everthing` from `make-mode` to update all targets and
-  macros defined in the file. This won't update variables from included
+- variables are updated when ':' and '=' pressed -- these actions that are
+  defined in `make-mode` to keep track of macros/targets. Therefore, it is
+  quite possible that variable names can change without tables being updated.
+
+  **To sync variables with their definitions**, call
+  `makefile-pickup-everthing` (defined in `make-mode`) to update all targets
+  and macros defined in the file. This won't update variables from included
   files however.
 
 TODO:
@@ -30,7 +32,12 @@ TODO:
   to determine what to do when mergin tables
 - support 'ifeq', 'ifneq'
 - Either do variable substitution when storing values or do multi-level
-  macroexpansion, like elisp.
+  macroexpansion, like elisp would be pretty sweet.
+- deal with builtin defaults somehow?? eg. $(RM) => 'rm -r'
+- option to expand external commands -- $(shell ...)
+- or show results of commands like patsubst, dir, etc.
+
+Code:
 
 
 ---
