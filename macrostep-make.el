@@ -1,7 +1,8 @@
-;;; macrostep-make ---  -*- lexical-binding: t; -*-
+;;; macrostep-make.el --- macrostep for makefile macros -*- lexical-binding: t; -*-
 
 ;; This is free and unencumbered software released into the public domain.
 
+;; Last modified: <2019-02-14 02:52:48>
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/macrostep-make
 ;; Package-Requires: 
@@ -74,7 +75,7 @@
 (require 'macrostep)
 (require 'make-mode)
 
-;;; Variables
+;;; Variables - not implemented
 (defvar macrostep-make-use-shell t
   "If non-nil, call `shell-file-name' to evaluate makefile 'shell' variables.")
 
@@ -95,8 +96,7 @@
                    (1+ (point)))))
         (cons start end)))))
 
-(put 'make-macro 'bounds-of-thing-at-point
-     'macrostep-make-bounds-of-macro-at-point)
+(put 'make-macro 'bounds-of-thing-at-point 'macrostep-make-bounds-of-macro-at-point)
 
 ;; -------------------------------------------------------------------
 ;;; Parsing macro values
@@ -146,7 +146,7 @@
 
 ;; so we can update possibly missed variables when called from
 ;; `makefile-pickup-everything'
-(advice-add 'makefile-pickup-everything :after 'macrostep-make--update-macro-table)
+(advice-add 'makefile-pickup-everything :after #'macrostep-make--update-macro-table)
 
 ;; table of macros and their values
 (defvar-local macrostep-make--table nil)
@@ -155,8 +155,7 @@
 ;; If the macro is in the table but its value has changed,
 ;; unless NO-UPDATE is non-nil, update its value.
 ;; Returns non-nil if MACRO-NAME isn't 0 length
-(defun macrostep-make--remember-macro (macro-name macro-value
-                                                  &optional no-update)
+(defun macrostep-make--remember-macro (macro-name macro-value &optional no-update)
   (when (not (zerop (length macro-name)))
     (let ((val (assoc macro-name macrostep-make--table)))
       (if (not val)
