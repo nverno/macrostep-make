@@ -2,7 +2,7 @@
 
 ;; This is free and unencumbered software released into the public domain.
 
-;; Last modified: <2019-02-14 02:52:48>
+;; Last modified: <2019-07-26.01>
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/macrostep-make
 ;; Package-Requires: 
@@ -89,6 +89,7 @@
   (save-excursion
     (skip-chars-backward "^$)}:#= \t\n" (line-beginning-position))
     (when (and (eq ?\$ (char-before))
+               (not (eq ?\$ (char-before (1- (point)))))
                (memq (char-after) '(?\( ?\{)))
       (let ((start (1- (point)))
             (end (progn
@@ -160,8 +161,7 @@
     (let ((val (assoc macro-name macrostep-make--table)))
       (if (not val)
           (setq macrostep-make--table
-                (cons (cons macro-name macro-value)
-                      macrostep-make--table))
+                (cons (cons macro-name macro-value) macrostep-make--table))
         ;; unless NO-UPDATE, update macro's value if different
         (and (not no-update)
              (not (string= macro-value (cdr val)))
@@ -274,8 +274,7 @@
 ;; so nested variables are expanded if they are known
 (defun macrostep-make--substitute-variables (str &optional macro-table)
   (unless macro-table
-    (setq macro-table (buffer-local-value 'macrostep-make--table
-                                          (current-buffer))))
+    (setq macro-table (buffer-local-value 'macrostep-make--table (current-buffer))))
   (with-temp-buffer
     (insert str)
     (goto-char (point-min))
