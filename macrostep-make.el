@@ -92,9 +92,10 @@
                (memq (char-after) '(?\( ?\{)))
       (let ((start (1- (point)))
             (end (progn
-                   (skip-chars-forward "^)}" (line-end-position))
+                   (skip-chars-forward "^ \t)}" (line-end-position))
                    (1+ (point)))))
-        (cons start end)))))
+        (and (memq (char-after) '(?\) ?\}))
+             (cons start end))))))
 
 (put 'make-macro 'bounds-of-thing-at-point 'macrostep-make-bounds-of-macro-at-point)
 
