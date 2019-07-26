@@ -2,7 +2,6 @@
 
 ;; This is free and unencumbered software released into the public domain.
 
-;; Last modified: <2019-07-26.01>
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/macrostep-make
 ;; Package-Requires: 
