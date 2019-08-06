@@ -1,4 +1,4 @@
-# -*- mode: makefile -*-
+# -*- mode: makefile-gmake -*-
 ROOT         ?= .
 NVP_INCL_DIR = ${ROOT}/include
 
@@ -11,3 +11,9 @@ NVP_CFLAGS   = -std=c99 -g -Wall -Wextra \
 
 CC           = gcc
 CFLAGS       = ${NVP_CFLAGS} ${NVP_CDEFS}
+
+ifeq (1,2)
+  CPP = clang++
+else
+  CPP = clang
+endif
