@@ -68,7 +68,8 @@
 ;; form: (<name> [value] <type> [file] [lineno])
 ;; where value, file, and lineno may be nil
 (defsubst macrostep-make--value (name)
-  (nth 1 (assoc name (nvp-makecomp-candidates 'variables))))
+  (-when-let (val (assoc name (nvp-makecomp-candidates 'variables)))
+    (or (nth 1 val) " ")))
 
 ;; pos is in variable or function position, preceded by '[^$]$[{(]'
 (defsubst macrostep-make-v-or-f-p (pos)
