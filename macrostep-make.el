@@ -116,7 +116,7 @@
 
 ;; return the bounds of the macro at point
 (defun macrostep-make-sexp-bounds ()
-  (or (bounds-of-thing-at-point 'makevar)
+  (or (bounds-of-thing-at-point 'make-macro)
       (signal 'macrostep-make-non-macro nil)))
 
 ;; return => `macrostep-expand-1-function'
