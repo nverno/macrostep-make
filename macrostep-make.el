@@ -46,11 +46,11 @@
 ;;; Code:
 (eval-when-compile
   (require 'dash)
-  (require 'cl-lib))
+  (require 'cl-lib)
+  (require 'subr-x))
 (require 'make-mode)
 (require 'macrostep)
 (require 'nvp-make-completion)          ; use make's database from 'make -prns'
-(autoload 'string-trim "subr-x")
 
 ;;; Variables - not implemented
 (defvar macrostep-make-use-shell t
