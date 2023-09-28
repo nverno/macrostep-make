@@ -54,7 +54,7 @@
 
 ;;; Variables - not implemented
 (defvar macrostep-make-use-shell t
-  "If non-nil, call `shell-file-name' to evaluate makefile 'shell' variables.")
+  "If non-nil, call `shell-file-name' to evaluate makefile shell variables.")
 
 ;; unused: do a shell command
 (defun macrostep-make--do-shell (cmd)
