@@ -1,4 +1,4 @@
-;; Gathering macros by parsing buffer
+;; Gathering macros by parsing buffer  -*- lexical-binding: t; -*-
 ;; superceded by read make's database
 
 (defun macrostep-make-bounds-of-macro-at-point ()
