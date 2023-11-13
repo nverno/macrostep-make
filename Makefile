@@ -1,9 +1,12 @@
 curl  ?= curl
 emacs ?= emacs
 wget  ?= wget
-RM    = rm -rf
+RM    =  rm -rf
 
+.PHONY: all test
 all:
+	@$(curl) -v
+
 test: test/macrostep-make-tests.el
 	$(emacs) -Q -batch --eval '(progn (push "." load-path))' \
 	-L . -l ert -l test/macrostep-make-tests.el              \
