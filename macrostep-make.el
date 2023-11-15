@@ -1,11 +1,11 @@
-;;; macrostep-make.el --- macrostep for makefile macros -*- lexical-binding: t; -*-
-
-;; This is free and unencumbered software released into the public domain.
+;;; macrostep-make.el --- Interactive macro expander for makefiles -*- lexical-binding: t; -*-
 
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/macrostep-make
-;; Package-Requires: 
+;; Package-Requires: ((macrostep "0.9.2"))
 ;; Created:  6 May 2017
+;; Version: 0.1.0
+;; Keywords: languages, macro, debugging, make
 
 ;; This file is not part of GNU Emacs.
 ;;
@@ -25,9 +25,7 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-
-;;; Description:
-
+;;
 ;; Expands make variables using macrostep-expand interface. Variables
 ;; are retrieved from make's internal database using 'make -prns'. They are
 ;; updated when the buffer's file's modication time changes.

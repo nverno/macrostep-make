@@ -1,44 +1,26 @@
-*Author:* Noah Peart <noah.v.peart@gmail.com><br>
-*URL:* [https://github.com/nverno/macrostep-make](https://github.com/nverno/macrostep-make)<br>
+## Makefile variable expansion using macrostep
 
-Description:
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Expands make variables using macrostep-expand interface.
+Expands make variables using macrostep-expand interface from [macrostep](https://github.com/emacsorphanage/macrostep).
 
-- creates an association list of macro -> value
-- currently is able to parse included makefiles and add their macro
-  definitions. If `macrostep-make-use-shell` is non-nil, then included
-  makefiles that require the $(shell) command can be found by calling
-  `shell-file-name`.
-- macrostep interface:
+Variables are retrieved from make's internal database using `make -prns`. They
+are updated when the buffer's file's modication time changes.
+
+The following functions are defined for the macrostep interface:
+
 	+ macrostep-sexp-bounds-function
 	+ macrostep-sexp-at-point-function
 	+ macrostep-environment-at-point-function
 	+ macrostep-expand-1-function
 	+ macrostep-print-function
 
-Hacks:
-- variables are updated when ':' and '=' pressed -- these actions that are
-  defined in `make-mode` to keep track of macros/targets. Therefore, it is
-  quite possible that variable names can change without tables being updated.
+### Usage
 
-  **To sync variables with their definitions**, call
-  `makefile-pickup-everthing` (defined in `make-mode`) to update all targets
-  and macros defined in the file. This won't update variables from included
-  files however.
+Require `macrostep` and `macrostep-make`.
 
-TODO:
-- Deal with '+=', also possibly '?=' by adding new cell to table
-  to determine what to do when mergin tables
-- support 'ifeq', 'ifneq'
-- Either do variable substitution when storing values or do multi-level
-  macroexpansion, like elisp would be pretty sweet.
-- deal with builtin defaults somehow?? eg. $(RM) => 'rm -r'
-- option to expand external commands -- $(shell ...)
-- or show results of commands like patsubst, dir, etc.
+Bind `macrostep-expand` to a key, eg `(kbd C-c e)`.
 
-Code:
+Then, in makefiles, <kbd>C-c e</kbd> interactively expands variables at point.
 
-
----
-Converted from `macrostep-make.el` by [*el2markdown*](https://github.com/Lindydancer/el2markdown).
+![example](doc/macrostep-make.gif)
